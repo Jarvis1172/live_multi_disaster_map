@@ -7,10 +7,10 @@ import geopandas as gpd
 
 st.set_page_config(page_title="Live Multi-Disaster Map", layout="wide")
 st.title("🌐 Live Multi-Disaster Tracker")
-st.caption("Earthquakes, Tsunami Alerts, Floods & Drought-Prone Areas")
+st.caption("Earthquakes, Tsunami Alerts, Floods, Drought-Prone Areas & Key Locations")
 
 # Initialize Folium map
-m = folium.Map(location=[10, 20], zoom_start=2)
+m = folium.Map(location=[7.0, 81.0], zoom_start=7)
 
 # --------------------------
 # 1. Live Earthquakes (USGS)
@@ -83,7 +83,7 @@ except Exception as e:
     st.warning("⚠️ Unable to fetch flood data from GDACS.")
 
 # --------------------------
-# 3. Drought-Prone Areas (Static)
+# 3. Drought-Prone Areas
 # --------------------------
 st.subheader("🌵 Drought-Prone Areas")
 
@@ -103,6 +103,34 @@ try:
     ).add_to(m)
 except Exception as e:
     st.warning("⚠️ Please upload a valid drought_prone_areas.geojson file.")
+
+# --------------------------
+# 4. Pinned Key Locations
+# --------------------------
+st.subheader("📌 Key Locations")
+
+custom_locations = [
+    {
+        "name": "Head Office",
+        "lat": 6.920671150378149,
+        "lon": 79.8605492373369,
+        "link": "https://maps.app.goo.gl/HS7pKd9djMVzNgq49"
+    },
+    {
+        "name": "DCSL Lanka Distilleries Factory",
+        "lat": 7.334947589456902,
+        "lon": 80.63908611180476,
+        "link": "https://maps.app.goo.gl/rVXRkdbuP2D8uywt8"
+    }
+]
+
+for loc in custom_locations:
+    folium.Marker(
+        location=[loc["lat"], loc["lon"]],
+        icon=folium.Icon(color='purple', icon='info-sign'),
+        popup=folium.Popup(f'<b>{loc["name"]}</b><br><a href="{loc["link"]}" target="_blank">View on Google Maps</a>', max_width=300),
+        tooltip=loc["name"]
+    ).add_to(m)
 
 # --------------------------
 # Final Map Display
